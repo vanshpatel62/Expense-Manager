@@ -1,0 +1,23 @@
+{% extends 'expenses/base.html' %}
+{% load humanize %}
+
+{% block title %}Delete Transaction{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Delete Transaction</h2>
+    </div>
+    <div class="card-body">
+        <p>Are you sure you want to delete this transaction?</p>
+        <p><strong>Date:</strong> {{ transaction.transaction_date }}</p>
+        <p><strong>Amount:</strong> {{ user.profile.currency }}{{ transaction.amount|intcomma }}</p>
+        <p><strong>Description:</strong> {{ transaction.description|default:"-" }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'transactions' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

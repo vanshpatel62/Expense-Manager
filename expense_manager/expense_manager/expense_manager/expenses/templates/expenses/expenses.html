@@ -1,0 +1,46 @@
+{% extends 'expenses/base.html' %}
+{% load humanize %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Expenses</h2>
+        <a href="{% url 'add_expense' %}" class="btn btn-primary">Add Expense</a>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date }}</td>
+                    <td>{{ expense.category.name }}</td>
+                    <td class="expense-amount">{{ user.profile.currency }}{{ expense.amount|intcomma }}</td>
+                    <td>{{ expense.get_payment_method_display }}</td>
+                    <td>{{ expense.description|truncatechars:30|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'delete_expense' expense.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No expenses yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

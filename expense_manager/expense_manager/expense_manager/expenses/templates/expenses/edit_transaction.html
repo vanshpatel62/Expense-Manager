@@ -1,0 +1,276 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Edit Transaction{% endblock %}
+
+{% block content %}
+<div class="simple-form-container">
+    <div class="simple-form-card">
+        <h2 class="form-title">Edit Transaction</h2>
+        <form method="post" class="simple-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.transaction_type.id_for_label }}">Transaction Type *</label>
+                {{ form.transaction_type }}
+                {% if form.transaction_type.errors %}
+                    <div class="error-message">{{ form.transaction_type.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.account.id_for_label }}">Account *</label>
+                {{ form.account }}
+                {% if form.account.errors %}
+                    <div class="error-message">{{ form.account.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.amount.id_for_label }}">Amount *</label>
+                    {{ form.amount }}
+                    {% if form.amount.errors %}
+                        <div class="error-message">{{ form.amount.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.transaction_date.id_for_label }}">Date *</label>
+                    {{ form.transaction_date }}
+                    {% if form.transaction_date.errors %}
+                        <div class="error-message">{{ form.transaction_date.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Income Category Field (shown only for income transactions) -->
+            <div id="income-category-field" class="form-group" style="display: none;">
+                <label for="{{ form.income_category.id_for_label }}">Income Category *</label>
+                {{ form.income_category }}
+                {% if form.income_category.errors %}
+                    <div class="error-message">{{ form.income_category.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Expense Category Field (shown only for expense transactions) -->
+            <div id="expense-category-field" class="form-group" style="display: none;">
+                <label for="{{ form.expense_category.id_for_label }}">Expense Category *</label>
+                {{ form.expense_category }}
+                {% if form.expense_category.errors %}
+                    <div class="error-message">{{ form.expense_category.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- To Account Field (shown only for transfer transactions) -->
+            <div id="to-account-field" class="form-group" style="display: none;">
+                <label for="{{ form.to_account.id_for_label }}">To Account *</label>
+                {{ form.to_account }}
+                {% if form.to_account.errors %}
+                    <div class="error-message">{{ form.to_account.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="error-message">{{ form.description.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Transaction</button>
+                <a href="{% url 'transactions' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.simple-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+.simple-form-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.simple-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const transactionTypeSelect = document.getElementById('{{ form.transaction_type.id_for_label }}');
+    const accountSelect = document.getElementById('{{ form.account.id_for_label }}');
+    const toAccountSelect = document.getElementById('{{ form.to_account.id_for_label }}');
+    const incomeCategoryField = document.getElementById('income-category-field');
+    const expenseCategoryField = document.getElementById('expense-category-field');
+    const toAccountField = document.getElementById('to-account-field');
+    
+    function toggleFields() {
+        const selectedType = transactionTypeSelect.value;
+        
+        // Hide all category fields first
+        incomeCategoryField.style.display = 'none';
+        expenseCategoryField.style.display = 'none';
+        toAccountField.style.display = 'none';
+        
+        // Show relevant field based on transaction type
+        if (selectedType === 'income') {
+            incomeCategoryField.style.display = 'block';
+        } else if (selectedType === 'expense') {
+            expenseCategoryField.style.display = 'block';
+        } else if (selectedType === 'transfer') {
+            toAccountField.style.display = 'block';
+            filterToAccountOptions();
+        }
+    }
+    
+    function filterToAccountOptions() {
+        const selectedAccountId = accountSelect.value;
+        const toAccountOptions = toAccountSelect.options;
+        
+        // Reset all options to visible
+        for (let i = 0; i < toAccountOptions.length; i++) {
+            toAccountOptions[i].style.display = '';
+        }
+        
+        // Hide the selected source account from destination options
+        if (selectedAccountId) {
+            for (let i = 0; i < toAccountOptions.length; i++) {
+                if (toAccountOptions[i].value === selectedAccountId) {
+                    toAccountOptions[i].style.display = 'none';
+                    // If this option was selected, clear the selection
+                    if (toAccountOptions[i].selected) {
+                        toAccountSelect.value = '';
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Initial call to set up fields
+    toggleFields();
+    
+    // Add event listeners
+    transactionTypeSelect.addEventListener('change', toggleFields);
+    accountSelect.addEventListener('change', function() {
+        if (transactionTypeSelect.value === 'transfer') {
+            filterToAccountOptions();
+        }
+    });
+});
+</script>
+{% endblock %}

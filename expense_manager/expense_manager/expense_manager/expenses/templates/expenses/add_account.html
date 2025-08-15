@@ -1,0 +1,154 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Add Account{% endblock %}
+
+{% block content %}
+<div class="simple-form-container">
+    <div class="simple-form-card">
+        <h2 class="form-title">Add New Account</h2>
+        <form method="post" class="simple-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.account_name.id_for_label }}">Account Name *</label>
+                {{ form.account_name }}
+                {% if form.account_name.errors %}
+                    <div class="error-message">{{ form.account_name.errors.0 }}</div>
+                {% endif %}
+                <small class="help-text">Account name must contain at least one letter (a-z or A-Z)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.account_type.id_for_label }}">Account Type</label>
+                {{ form.account_type }}
+                {% if form.account_type.errors %}
+                    <div class="error-message">{{ form.account_type.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.current_balance.id_for_label }}">Initial Balance</label>
+                {{ form.current_balance }}
+                {% if form.current_balance.errors %}
+                    <div class="error-message">{{ form.current_balance.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Account</button>
+                <a href="{% url 'accounts' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.simple-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    padding: 20px;
+}
+
+.simple-form-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.form-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.simple-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.help-text {
+    color: #6c757d;
+    font-size: 12px;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #545b62;
+}
+</style>
+{% endblock %}

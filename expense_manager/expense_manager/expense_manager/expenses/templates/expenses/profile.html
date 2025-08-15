@@ -1,0 +1,46 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">User Profile</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h2 class="card-title">Account Information</h2>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tr>
+                <th>Username:</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone:</th>
+                <td>{{ user.phone|default:"Not provided" }}</td>
+            </tr>
+            <tr>
+                <th>Address:</th>
+                <td>{{ user.address|default:"Not provided" }}</td>
+            </tr>
+        </table>
+        <a href="{% url 'export_transactions_excel' %}" class="btn btn-success mt-3">Download My Transactions
+            (Excel)</a>
+    </div>
+</div>
+{% endblock %}

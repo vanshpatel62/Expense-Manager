@@ -1,0 +1,70 @@
+{% extends 'expenses/base.html' %}
+{% load humanize %}
+
+{% block title %}{{ account.account_name }} Details{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">{{ account.account_name }} Details</h2>
+        <div>
+            <span class="badge bg-primary">{{ account.get_account_type_display }}</span>
+            <span class="badge bg-success">Balance: {{ user.profile.currency }}{{ account.current_balance|intcomma }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <h3>Transactions</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Category/Details</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.transaction_date }}</td>
+                    <td>
+                        <span class="badge {% if transaction.transaction_type == 'income' %}bg-success{% elif transaction.transaction_type == 'expense' %}bg-danger{% else %}bg-info{% endif %}">
+                            {{ transaction.get_transaction_type_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if transaction.transaction_type == 'income' %}
+                            {{ transaction.income_category.get_name_display|default:"-" }}
+                        {% elif transaction.transaction_type == 'expense' %}
+                            {{ transaction.expense_category.get_name_display|default:"-" }}
+                        {% elif transaction.transaction_type == 'transfer' %}
+                            To: {{ transaction.to_account.account_name|default:"-" }}
+                        {% else %}
+                            {{ transaction.category.name|default:"-" }}
+                        {% endif %}
+                    </td>
+                    <td class="{% if transaction.transaction_type == 'income' %}income-amount{% elif transaction.transaction_type == 'expense' %}expense-amount{% else %}transfer-amount{% endif %}">
+                        {% if transaction.transaction_type == 'transfer' %}
+                            <span class="text-info">{{ user.profile.currency }}{{ transaction.amount|intcomma }}</span>
+                        {% else %}
+                            {{ user.profile.currency }}{{ transaction.amount|intcomma }}
+                        {% endif %}
+                    </td>
+                    <td>{{ transaction.description|truncatechars:30|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No transactions for this account.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

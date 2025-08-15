@@ -1,0 +1,29 @@
+{% extends 'expenses/base.html' %}
+
+{% block title %}Delete Expense{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Delete Expense</h2>
+    </div>
+    <div class="card-body">
+        <p>Are you sure you want to delete this expense?</p>
+        <div class="alert alert-warning">
+            <strong>Expense Details:</strong><br>
+            Date: {{ expense.date }}<br>
+            Category: {{ expense.category.get_name_display }}<br>
+            Amount: {{ user.profile.currency }}{{ expense.amount }}<br>
+            Payment Method: {{ expense.get_payment_method_display }}<br>
+            {% if expense.description %}
+            Description: {{ expense.description }}
+            {% endif %}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete Expense</button>
+            <a href="{% url 'expenses' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %} 

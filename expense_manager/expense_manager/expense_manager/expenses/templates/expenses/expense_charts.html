@@ -1,0 +1,162 @@
+{% extends 'expenses/base.html' %}
+{% load humanize %}
+{% load chart_filters %}
+
+{% block title %}Expense Charts{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Expense Category Distribution</h2>
+            </div>
+            <div class="card-body">
+                <canvas id="expenseChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Summary</h3>
+            </div>
+            <div class="card-body">
+                <div class="summary-item">
+                    <h4>Total Expenses</h4>
+                    <p class="amount">{{ user.profile.currency }}{{ total_expense|intcomma }}</p>
+                </div>
+                
+                <div class="category-breakdown">
+                    <h4>Category Breakdown</h4>
+                    {% for label in labels %}
+                    <div class="category-item">
+                        <span class="category-color" style="background-color: {{ colors|get_item:forloop.counter0 }};"></span>
+                        <span class="category-name">{{ label }}</span>
+                        <span class="category-amount">{{ user.profile.currency }}{{ data|get_item:forloop.counter0|intcomma }}</span>
+                        <span class="category-percentage">({{ data|get_item:forloop.counter0|percentage:total_expense }}%)</span>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.summary-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.summary-item h4 {
+    margin: 0 0 10px 0;
+    color: #495057;
+    font-size: 16px;
+}
+
+.summary-item .amount {
+    font-size: 24px;
+    font-weight: bold;
+    color: #dc3545;
+    margin: 0;
+}
+
+.category-breakdown h4 {
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+.category-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.category-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.category-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.category-amount {
+    font-weight: bold;
+    color: #dc3545;
+    margin-right: 5px;
+}
+
+.category-percentage {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+#expenseChart {
+    max-width: 100%;
+    height: auto;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    
+    const data = {
+        labels: {{ labels|safe }},
+        datasets: [{
+            data: {{ data|safe }},
+            backgroundColor: {{ colors|safe }},
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    };
+    
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${label}: {{ user.profile.currency }}${value.toLocaleString()} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
+    new Chart(ctx, config);
+});
+</script>
+{% endblock %} 
