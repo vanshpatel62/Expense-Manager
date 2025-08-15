@@ -1,2 +1,1 @@
-# -Smart-Attendance
-# Expense-Manager
+# Expense Manager
